@@ -11,6 +11,10 @@ trimesh = "^4.4.0"
 pyglet = "<2.0.0"
 pillow = "^10.3.0"
 pyvista = "^0.43.8"
+scipy = "^1.13.1"
+cvxpy = "^1.5.1"
+cylp = "^0.92.2"
+networkx = "^3.3"
 
 [build-system]
 requires = ["poetry-core"]
