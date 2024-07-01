@@ -73,13 +73,13 @@ def optimal_planner(start_point: np.ndarray, goal_point: np.ndarray, mesh: pv.Po
     # print("Status:", problem.status)
     # print("Optimal value:", problem.value)
     # print("Edge flows:", x.value)
-    for edge, (p1, p2) in edge_dict.items():
-        if x.value[edge] == 1:
-            plotter.add_points(p1, color='white', point_size=10, )
-            plotter.add_points(p2, color='white', point_size=10, )
+
+    path_points = np.array([point for edge, (p1, p2) in edge_dict.items() if x.value[edge] == 1 for point in (p1, p2)])
+    plotter.add_lines(path_points, color='blue', label='Path')
 
     # Add start and goal points
     plotter.add_points(start, color='red', point_size=10, label='Start Point')
-    plotter.add_points(goal, color='blue', point_size=10, label='Goal Point')
+    plotter.add_points(goal, color='green', point_size=10, label='Goal Point')
 
+    plotter.add_legend()
     plotter.show()
