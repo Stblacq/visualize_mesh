@@ -7,7 +7,7 @@ import numpy as np
 import pyvista as pv
 
 from visualize.miki_planner import mixed_integer_kinodynamic_planner
-from visualize.pruned import iterative_mixed_integer_kinodynamic_planner
+from visualize.ssp import sequential_submesh_planner
 
 
 def visualizer(mesh_file_path: str, planner: Callable):
@@ -52,7 +52,7 @@ def run_example(example: str):
         planner = mixed_integer_kinodynamic_planner
     elif example == 'large':
         mesh_filename = 'desert.obj'
-        planner = iterative_mixed_integer_kinodynamic_planner
+        planner = sequential_submesh_planner
     else:
         print("Invalid example specified. Use 'simple' or 'large'.")
         return

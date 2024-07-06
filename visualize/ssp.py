@@ -68,11 +68,11 @@ def extract_sub_mesh(mesh, radius, start_point):
     return extracted_mesh
 
 
-def iterative_mixed_integer_kinodynamic_planner(start_point: np.ndarray,
-                                                goal_point: np.ndarray,
-                                                plotter,
-                                                mesh: pv.DataSet,
-                                                max_iterations: int = 1000):
+def sequential_submesh_planner(start_point: np.ndarray,
+                               goal_point: np.ndarray,
+                               plotter,
+                               mesh: pv.DataSet,
+                               max_iterations: int = 1000):
     radius = 0.3
     radius_max = 0.3
     path = []
