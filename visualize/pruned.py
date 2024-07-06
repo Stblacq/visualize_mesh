@@ -1,7 +1,8 @@
 import numpy as np
 import pyvista as pv
+from pyvista.plotting import Plotter
 
-from visulalize import mixed_integer_kinodynamic_planner
+from visualize import mixed_integer_kinodynamic_planner
 
 
 def check_mesh_size(mesh: pv.DataSet):
@@ -38,6 +39,14 @@ def dummy_planner(start_point: np.ndarray,
     return [start_point, goal_point]
 
 
+def geodesic_planner(start_point: np.ndarray, goal_point: np.ndarray, mesh: pv.PolyData, plotter: Plotter):
+    start_id = mesh.find_closest_point(start_point)
+    goal_id = mesh.find_closest_point(goal_point)
+
+    path = mesh.geodesic(start_id, goal_id)
+    plotter.add_mesh(path, color='white', line_width=5)
+
+
 def move_towards_goal(goal_point: np.ndarray, current_position: np.ndarray, radius: float):
     direction_vector = goal_point - current_position
     direction_vector = direction_vector / np.linalg.norm(direction_vector)  # Normalize
@@ -59,11 +68,11 @@ def extract_sub_mesh(mesh, radius, start_point):
     return extracted_mesh
 
 
-def mixed_integer_kinodynamic_planner_pruned(start_point: np.ndarray,
-                                             goal_point: np.ndarray,
-                                             plotter,
-                                             mesh: pv.DataSet,
-                                             max_iterations: int = 1000):
+def iterative_mixed_integer_kinodynamic_planner(start_point: np.ndarray,
+                                                goal_point: np.ndarray,
+                                                plotter,
+                                                mesh: pv.DataSet,
+                                                max_iterations: int = 1000):
     radius = 0.3
     radius_max = 0.3
     path = []
@@ -72,29 +81,19 @@ def mixed_integer_kinodynamic_planner_pruned(start_point: np.ndarray,
 
     while iteration < max_iterations:
         extracted_mesh = extract_sub_mesh(mesh, radius, current_start)
-        # if extracted_mesh.n_points == 0:
-        #     print("Extracted mesh is empty, trying a smaller radius or different direction.")
-        #     radius *= 1.1
-        #     if radius > radius_max:
-        #         print("Radius too large, stopping the planner.")
-        #         break
-        #     continue
-        # check_mesh_size(extracted_mesh)
         plotter.add_mesh(extracted_mesh, color='white')
         boundary_points = get_sorted_boundary_points(extracted_mesh, current_start, goal_point, radius)
         plotter.add_points(np.array(boundary_points), color='blue')
 
         if is_point_in_mesh(extracted_mesh, goal_point):
-            sub_path = mixed_integer_kinodynamic_planner(current_start, goal_point, extracted_mesh)
+            sub_path = mixed_integer_kinodynamic_planner(current_start, goal_point, None, extracted_mesh)
             if sub_path:
                 path.extend(sub_path)
-            print(">>>>>>found")
             break  # Path to goal found, exit loop
         else:
             progress_made = False
             for closest_point in boundary_points:
-                print("<<<<<<<<>>>>>>>>")
-                sub_path = mixed_integer_kinodynamic_planner(current_start, closest_point, extracted_mesh)
+                sub_path = mixed_integer_kinodynamic_planner(current_start, closest_point, None, extracted_mesh)
                 if sub_path:
                     path.extend(sub_path)
                     current_start = move_towards_goal(goal_point, closest_point, radius)
@@ -110,4 +109,3 @@ def mixed_integer_kinodynamic_planner_pruned(start_point: np.ndarray,
         print("Reached maximum iterations, stopping the planner.")
     plotter.add_lines(np.array(path), color='blue', label='Path')
     return path
-
