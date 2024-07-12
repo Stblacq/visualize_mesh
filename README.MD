@@ -63,3 +63,6 @@ This project is licensed under the MIT License.
 ## Examples
 ### botanical garden osnabrueck mesh
 ![botanical_garden_osnabrueck_mesh](./test.png)
+
+### Desert Terrain mesh
+![desert](./desert.png)

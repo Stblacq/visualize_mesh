@@ -47,11 +47,11 @@ def geodesic_planner(start_point: np.ndarray, goal_point: np.ndarray, mesh: pv.P
     plotter.add_mesh(path, color='white', line_width=5)
 
 
-def move_towards_goal(goal_point: np.ndarray, current_position: np.ndarray, radius: float):
-    direction_vector = goal_point - current_position
-    direction_vector = direction_vector / np.linalg.norm(direction_vector)  # Normalize
-    new_position = current_position + direction_vector * radius
-    return new_position
+# def move_towards_goal(goal_point: np.ndarray, current_position: np.ndarray, radius: float):
+#     direction_vector = goal_point - current_position
+#     direction_vector = direction_vector / np.linalg.norm(direction_vector)  # Normalize
+#     new_position = current_position + direction_vector * radius
+#     return new_position
 
 
 def is_point_in_mesh(mesh: pv.DataSet, point: np.ndarray, tolerance: float = 1e-6) -> bool:
@@ -74,7 +74,6 @@ def sequential_submesh_planner(start_point: np.ndarray,
                                mesh: pv.DataSet,
                                max_iterations: int = 1000):
     radius = 0.3
-    radius_max = 0.3
     path = []
     current_start = start_point
     iteration = 0
@@ -83,7 +82,7 @@ def sequential_submesh_planner(start_point: np.ndarray,
         extracted_mesh = extract_sub_mesh(mesh, radius, current_start)
         plotter.add_mesh(extracted_mesh, color='white')
         boundary_points = get_sorted_boundary_points(extracted_mesh, current_start, goal_point, radius)
-        plotter.add_points(np.array(boundary_points), color='blue')
+        # plotter.add_points(np.array(boundary_points), color='blue')
 
         if is_point_in_mesh(extracted_mesh, goal_point):
             sub_path = mixed_integer_kinodynamic_planner(current_start, goal_point, None, extracted_mesh)
@@ -96,7 +95,7 @@ def sequential_submesh_planner(start_point: np.ndarray,
                 sub_path = mixed_integer_kinodynamic_planner(current_start, closest_point, None, extracted_mesh)
                 if sub_path:
                     path.extend(sub_path)
-                    current_start = move_towards_goal(goal_point, closest_point, radius)
+                    current_start = closest_point
                     progress_made = True
                     break
 
