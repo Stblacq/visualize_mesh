@@ -1,1 +1,2 @@
 *.obj filter=lfs diff=lfs merge=lfs -text
+botanical_garden_osnabrueck_mesh.ply filter=lfs diff=lfs merge=lfs -text

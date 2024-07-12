@@ -59,3 +59,7 @@ Feel free to submit issues or pull requests if you have suggestions or improveme
 ## License
 
 This project is licensed under the MIT License.
+
+## Examples
+### botanical garden osnabrueck mesh
+![botanical_garden_osnabrueck_mesh](./test.png)
